@@ -1,36 +1,3 @@
-// resource "google_cloudiot_registry" "iot_test1" {
-//   name     = "iot-test1"
-// }
-//
-// resource "google_pubsub_topic" "iot_test1" {
-//   name = "iot-test1"
-// }
-//
-// resource "google_pubsub_subscription" "iot_test1" {
-//   name  = "iot-test1-subscription"
-//   topic = google_pubsub_topic.iot_test1.name
-//
-//   labels = {
-//     foo = "bar"
-//   }
-//
-//   # 20 minutes
-//   message_retention_duration = "1200s"
-//   retain_acked_messages      = true
-//
-//   ack_deadline_seconds = 20
-//
-//   expiration_policy {
-//     ttl = "300000.5s"
-//   }
-//   retry_policy {
-//     minimum_backoff = "10s"
-//   }
-//
-//   enable_message_ordering    = false
-// }
-//
-
 resource "google_pubsub_topic" "default_devicestatus" {
   name = "default-devicestatus"
 }
@@ -76,4 +43,28 @@ resource "google_cloudiot_registry" "test_registry" {
   //     certificate = file("test-fixtures/rsa_cert.pem")
   //   }
   // }
+}
+
+resource "google_cloudiot_device" "device_dev1" {
+  name     = "device-dev1"
+  registry = google_cloudiot_registry.test_registry.id
+
+  credentials {
+    public_key {
+        format = "RSA_PEM"
+        key = file("../rsa_public-dev1.pem")
+    }
+  }
+
+  blocked = false
+
+  log_level = "INFO"
+
+  metadata = {
+    test_key_1 = "test_value_1"
+  }
+
+  gateway_config {
+    gateway_type = "NON_GATEWAY"
+  }
 }
