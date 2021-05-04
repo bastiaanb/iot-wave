@@ -10,6 +10,66 @@ resource "google_pubsub_topic" "additional_telemetry" {
   name = "additional-telemetry"
 }
 
+resource "google_pubsub_subscription" "default_devicestatus" {
+  name  = google_pubsub_topic.default_devicestatus.name
+  topic = google_pubsub_topic.default_devicestatus.name
+
+  message_retention_duration = "1200s" # 20 minutes
+  retain_acked_messages      = true
+
+  ack_deadline_seconds = 20
+
+  expiration_policy {
+    ttl = "86400s" # 1 day
+  }
+
+  retry_policy {
+    minimum_backoff = "10s"
+  }
+
+  enable_message_ordering    = false
+}
+
+resource "google_pubsub_subscription" "default_telemetry" {
+  name  = google_pubsub_topic.default_telemetry.name
+  topic = google_pubsub_topic.default_telemetry.name
+
+  message_retention_duration = "1200s" # 20 minutes
+  retain_acked_messages      = true
+
+  ack_deadline_seconds = 20
+
+  expiration_policy {
+    ttl = "86400s" # 1 day
+  }
+
+  retry_policy {
+    minimum_backoff = "10s"
+  }
+
+  enable_message_ordering    = false
+}
+
+resource "google_pubsub_subscription" "additional_telemetry" {
+  name  = google_pubsub_topic.additional_telemetry.name
+  topic = google_pubsub_topic.additional_telemetry.name
+
+  message_retention_duration = "1200s" # 20 minutes
+  retain_acked_messages      = true
+
+  ack_deadline_seconds = 20
+
+  expiration_policy {
+    ttl = "86400s" # 1 day
+  }
+
+  retry_policy {
+    minimum_backoff = "10s"
+  }
+
+  enable_message_ordering    = false
+}
+
 resource "google_cloudiot_registry" "test_registry" {
   name     = "cloudiot-registry"
 
